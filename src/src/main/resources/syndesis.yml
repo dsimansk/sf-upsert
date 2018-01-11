@@ -1,0 +1,26 @@
+---
+flows:
+- steps:
+  - kind: connector
+    componentId: twitter-timeline-1
+    componentScheme: twitter-timeline
+    properties:
+      accessToken: '{{twitter-timeline-1.accessToken}}'
+      accessTokenSecret: '{{twitter-timeline-1.accessTokenSecret}}'
+      consumerKey: '{{twitter-timeline-1.consumerKey}}'
+      consumerSecret: '{{twitter-timeline-1.consumerSecret}}'
+      delay: "30000"
+      timelineType: MENTIONS
+  - kind: filter
+    expression: ${body.text} contains '#e2e'
+    steps:
+    - kind: filter
+      expression: ${body.text} contains '#syndesis4ever'
+      steps:
+      - kind: endpoint
+        uri: atlas:mapping-step-4.json
+      - kind: endpoint
+        uri: salesforce-upsert-sobject-5
+        properties:
+          sObjectIdName: TwitterScreenName__c
+          sObjectName: Contact
